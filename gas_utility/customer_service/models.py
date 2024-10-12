@@ -1,20 +1,31 @@
-from django.contrib.auth.models import User
+# customer_service/models.py
+
 from django.db import models
 
-class ServiceRequest(models.Model):
-    customer = models.ForeignKey(User, on_delete=models.CASCADE, related_name="requests")
-    request_type = models.CharField(max_length=100)  # E.g. Gas Leak, Maintenance, etc.
-    description = models.TextField()
-    file_attachment = models.FileField(upload_to='attachments/', blank=True, null=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-    status = models.CharField(max_length=20, choices=[('pending', 'Pending'), ('resolved', 'Resolved')], default='pending')
-    resolved_at = models.DateTimeField(blank=True, null=True)
+class Customer(models.Model):
+    first_name = models.CharField(max_length=50)
+    last_name = models.CharField(max_length=50)
+    email = models.EmailField()
+    phone = models.CharField(max_length=15)
+    address = models.TextField()
 
     def __str__(self):
-        return f"{self.customer.username} - {self.request_type}"
+        return f"{self.first_name} {self.last_name}"
 
-# Extend the user model for more customer info (optional)
-class Profile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    address = models.TextField()
-    phone_number = models.CharField(max_length=15)
+class ServiceRequest(models.Model):
+    REQUEST_STATUS = (
+        ('pending', 'Pending'),
+        ('in_progress', 'In Progress'),
+        ('resolved', 'Resolved'),
+    )
+
+    customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
+    request_type = models.CharField(max_length=100)
+    description = models.TextField()
+    status = models.CharField(max_length=20, choices=REQUEST_STATUS, default='pending')
+    created_at = models.DateTimeField(auto_now_add=True)
+    resolved_at = models.DateTimeField(null=True, blank=True)
+    attachment = models.FileField(upload_to='attachments/', null=True, blank=True)
+
+    def __str__(self):
+        return f"Request {self.pk} - {self.request_type}"

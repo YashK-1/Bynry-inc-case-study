@@ -28,3 +28,21 @@ def manage_requests(request):
         requests = ServiceRequest.objects.all()
         return render(request, 'customer_service/manage_requests.html', {'requests': requests})
     return redirect('home')
+
+def submit_request(request):
+    if request.method == 'POST':
+        form = ServiceRequestForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            return redirect('track_request')  # Redirect after successful submission
+    else:
+        form = ServiceRequestForm()
+    return render(request, 'submit_request.html', {'form': form})
+
+def track_request(request):
+    service_requests = ServiceRequest.objects.filter(customer__email=request.user.email)
+    return render(request, 'track_request.html', {'requests': service_requests})
+
+def manage_requests(request):
+    service_requests = ServiceRequest.objects.all()
+    return render(request, 'manage_requests.html', {'requests': service_requests})

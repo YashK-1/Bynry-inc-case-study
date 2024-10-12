@@ -4,4 +4,4 @@ from .models import ServiceRequest
 class ServiceRequestForm(forms.ModelForm):
     class Meta:
         model = ServiceRequest
-        fields = ['request_type', 'description', 'file_attachment']
+        fields = ['customer', 'request_type', 'description', 'attachment']
