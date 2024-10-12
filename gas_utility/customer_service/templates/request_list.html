@@ -1,0 +1,11 @@
+<h2>Your Service Requests</h2>
+<ul>
+  {% for request in requests %}
+    <li>
+      {{ request.request_type }} - {{ request.status }} (Submitted: {{ request.created_at }})
+      {% if request.resolved_at %}
+      - Resolved on: {{ request.resolved_at }}
+      {% endif %}
+    </li>
+  {% endfor %}
+</ul>
